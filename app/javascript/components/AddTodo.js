@@ -40,12 +40,53 @@ const Icon = styled.span`
   margin: 0 7px;
 `
 
+toast.configure()
 
-
-function AddTodo(){
+function AddTodo(props){
+  
+  const initialTodoState = {
+    id: null,
+    name: "",
+    is_completed: false
+  }
+  
+  const[todo,setTodo] = useState (initialTodoState)
+  
+  const handleImnputChange = event => {
+    const{ name,value } = event.target
+    setTodo({...todo,[name]:value})
+  }
+  
+  const notify = () => {
+    toast.success("Todo successfully created!", {
+      position: "bottom-center",
+      hideProgressBar: true
+    });
+  }
+  
+  const saveTodo = () =>{
+    var data={
+      name: todo.name
+    }
+    axios.post('/api/v1/todos',data)
+    .then(resp => {
+      setTodo({
+        id: resp.data.id,
+        name: resp.data.name,
+        is_completed: resp.data.is_completed
+      })
+      notify()
+      props.history.push('/todos')
+    })
+  }
+  
+  
+  
   return(
     <div>
-     AddTodo
+     <h1></h1>
+     
+     
     </div>
     )
 }
