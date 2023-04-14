@@ -6,7 +6,7 @@ import { ImCheckboxChecked, ImCheckboxUnchecked } from 'react-icons/im'
 import { AiFillEdit } from 'react-icons/ai'
 
 
-const SearchAndButtton = styled.div`
+const SearchAndButton = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -80,24 +80,64 @@ function TodoList(){
       axios.get('/api/v1/todos.json')
       .then(resp => {
         console.log(resp.data)
-        setTodos(resp.data)
-
+        setTodos(resp.data)     //ここでtodosの中身に全todoを入れてる
       })
     },[] )
 
   const removeAllTodos = () => {
     const sure =window.confirm("全てのTodoを削除してよろしいですか？")
     if (sure){
-      axios.get("/api/v1/destroy_all")
+      axios.delete("/api/v1/todos/destroy_all")
       .then(resp =>{
         setTodos([])
       })
     }
   }
 
+  const updateIsCompleted = (number,val) =>{
+    var data = {
+      id: val.id,
+      name: val.name,
+      is_completed: !val.is_completed    //この画面での更新は実行済みか否かだけ。だからis_compretedだけ反転したものを「data」と命名して準備。
+    }
+    axios.patch(`/api/v1/todos/${val.id}`,data)  //updateアクションに渡す値を「data」で用意してる。paramsと同じ。
+    .then(resp =>{
+      const newTodos = [...todos]   //todosを展開
+      newTodos[number].is_completed = resp.data.is_completed   //todosのnumber番目のis_compretedにrespのis_compretedを入れる
+      setTodos(newTodos)
+    })
+  }
+
   return(
     <div>
-     TodoList
+     <h1>Todo List</h1>
+     <SearchAndButton>
+       <SearchForm type="text" placeholder="Search todo..." onChange={event=>{setSearchName(event.target.value)}}/>
+       <RemoveAllButton onClick={removeAllTodos}>Remove All</RemoveAllButton>
+     </SearchAndButton>
+     
+     <div>
+      {todos.filter((todo) => {
+        if(searchName==""){
+          return todo
+        }else if(todo.name.toLowerCase().includes(searchName.toLowerCase())){
+          return todo
+        }
+      })
+      .map((todo,key)=>{
+        return(
+        <Row key={key}>
+         {todo.is_completed ? (
+         <CheckedBox> <ImCheckboxChecked onClick={()=>updateIsCompleted(key,todo)}/> </CheckedBox>
+         ) : (
+         <UncheckedBox> <ImCheckboxUnchecked onClick={()=>updateIsCompleted(key,todo)}/> </UncheckedBox>
+         )}
+         <TodoName is_completed={todo.is_completed}>{todo.name}</TodoName>
+         <Link to={"/todos/"+todo.id+"/edit"}> <EditButton> <AiFillEdit/> </EditButton> </Link>
+        </Row>
+        )
+      })}
+     </div>
     </div>
     )
 }
