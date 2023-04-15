@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import styled from 'styled-components'
-import { toast } from 'react-toastify'
+
 import 'react-toastify/dist/ReactToastify.css'
 import { FiSend } from 'react-icons/fi'
 
@@ -40,7 +40,7 @@ const Icon = styled.span`
   margin: 0 7px;
 `
 
-toast.configure()
+
 
 function AddTodo(props){
   
@@ -52,21 +52,16 @@ function AddTodo(props){
   
   const[todo,setTodo] = useState (initialTodoState)
   
+  
+  
   const handleImnputChange = event => {
     const{ name,value } = event.target
     setTodo({...todo,[name]:value})
   }
   
-  const notify = () => {
-    toast.success("Todo successfully created!", {
-      position: "bottom-center",
-      hideProgressBar: true
-    });
-  }
-  
   const saveTodo = () =>{
     var data={
-      name: todo.name
+      name: todo.name,
     }
     axios.post('/api/v1/todos',data)
     .then(resp => {
@@ -75,8 +70,11 @@ function AddTodo(props){
         name: resp.data.name,
         is_completed: resp.data.is_completed
       })
-      notify()
+     
       props.history.push('/todos')
+    })
+    .catch(e =>{
+      console.log(e)
     })
   }
   
@@ -84,8 +82,14 @@ function AddTodo(props){
   
   return(
     <div>
-     <h1></h1>
-     
+     <h1>New Todo</h1>
+      <InputAndButton>
+        <InputName type="text" required value={todo.name} name="name" onChange={handleImnputChange}/>
+        <Button
+             onClick={saveTodo}
+             disabled={(!todo.name || /^\s*$/.test(todo.name))}
+         > <Icon> <FiSend/> </Icon> </Button>
+      </InputAndButton>
      
     </div>
     )
