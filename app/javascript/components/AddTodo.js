@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import styled from 'styled-components'
 
-import 'react-toastify/dist/ReactToastify.css'
+
 import { FiSend } from 'react-icons/fi'
 
 const InputAndButton = styled.div`
@@ -42,23 +42,23 @@ const Icon = styled.span`
 
 
 
-function AddTodo(props){
-  
+function AddTodo(){
+
   const initialTodoState = {
     id: null,
     name: "",
     is_completed: false
   }
-  
+
   const[todo,setTodo] = useState (initialTodoState)
-  
-  
-  
+
+
+
   const handleImnputChange = event => {
     const{ name,value } = event.target
     setTodo({...todo,[name]:value})
   }
-  
+
   const saveTodo = () =>{
     var data={
       name: todo.name,
@@ -70,16 +70,16 @@ function AddTodo(props){
         name: resp.data.name,
         is_completed: resp.data.is_completed
       })
-     
-      props.history.push('/todos')
+    axios.get('/api/v1/todos')
+
     })
     .catch(e =>{
       console.log(e)
     })
   }
-  
-  
-  
+
+
+
   return(
     <div>
      <h1>New Todo</h1>
@@ -90,7 +90,7 @@ function AddTodo(props){
              disabled={(!todo.name || /^\s*$/.test(todo.name))}
          > <Icon> <FiSend/> </Icon> </Button>
       </InputAndButton>
-     
+
     </div>
     )
 }
