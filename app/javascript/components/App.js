@@ -42,7 +42,7 @@ const Wrapper = styled.div`
   max-width: 85%;
   margin: 20px auto;
 `
- 
+
 function App(){
   return(
      <div>
@@ -50,29 +50,29 @@ function App(){
          <Logo>
          TODO
          </Logo>
-         
+
          <NavItems>
-         
+
           <NavItem>
            <Link to="/todos">Todos</Link>
           </NavItem>
-          
+
           <NavItem>
            <Link to="/todos/new">Add New Todo</Link>
           </NavItem>
-          
+
         </NavItems>
         </Nabvar>
          <Wrapper>
             <Routes>
-            
+
               <Route exact path="/todos" element={<TodoList/>} />
               <Route exact path="/todos/new" element={<AddTodo/>} />
               <Route path="/todos/:id/edit" element={<EditTodo/>} />
             </Routes>
           </Wrapper>
      </div>
-     
+
     )
 }
 
