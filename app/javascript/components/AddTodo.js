@@ -42,14 +42,15 @@ const Icon = styled.span`
 
 toast.configure()
 
-function AddTodo(props) {
+function AddTodo(props){
+
   const initialTodoState = {
     id: null,
     name: "",
     is_completed: false
-  };
+  }
 
-  const [todo, setTodo] = useState(initialTodoState);
+  const[todo,setTodo] = useState (initialTodoState)
 
   const notify = () => {
     toast.success("Todo successfully created!", {
@@ -58,54 +59,42 @@ function AddTodo(props) {
     });
   }
 
-  const handleInputChange = event => {
-    const { name, value } = event.target;
-    setTodo({ ...todo, [name]: value });
-  };
+  const handleImnputChange = event => {
+    const{ name,value } = event.target
+    setTodo({...todo,[name]:value})
+  }
 
-  const saveTodo = () => {
-    var data = {
+  const saveTodo = () =>{
+    var data={
       name: todo.name,
-    };
-
-    axios.post('/api/v1/todos', data)
+    }
+    axios.post('/api/v1/todos',data)
     .then(resp => {
       setTodo({
         id: resp.data.id,
         name: resp.data.name,
         is_completed: resp.data.is_completed
-      });
-      notify();
-      props.history.push("/todos");
+      })
+      notify()
+      props.history.push('/todos')
     })
-    .catch(e => {
-      console.log(e)
-    })
-  };
+  }
 
 
-  return (
-    <>
-      <h1>New Todo</h1>
+
+  return(
+    <div>
+     <h1>New Todo</h1>
       <InputAndButton>
-        <InputForName
-          type="text"
-          required
-          value={todo.name}
-          onChange={handleInputChange}
-          name="name"
-        />
+        <InputName type="text" required value={todo.name} name="name" onChange={handleImnputChange}/>
         <Button
-          onClick={saveTodo}
-          disabled={(!todo.name || /^\s*$/.test(todo.name))}
-        >
-          <Icon>
-            <FiSend />
-          </Icon>
-        </Button>
+             onClick={saveTodo}
+             disabled={(!todo.name || /^\s*$/.test(todo.name))}
+         > <Icon> <FiSend/> </Icon> </Button>
       </InputAndButton>
-    </>
-  )
+
+    </div>
+    )
 }
 
 export default AddTodo
